@@ -1,0 +1,28 @@
+<html>
+<head>
+<%include partials/header.ejs%>
+</head>
+<body>
+<h1>Node Testing</h1>
+<canvas id="pc"></canvas>
+<script>
+const ctx = document.getElementById("pc").getContext("2d");
+var w = 20+(window.width||window.innerWidth);
+var h = 20+(window.height||window.innerHeight);
+$("#pc").attr({
+    height: h,
+    width: w
+});
+ctx.fillStyle="#def";
+ctx.rect(0,0,w,h);
+ctx.fill();
+
+function darken(){
+     $("#pc").css({
+         filter: "blur(10px) brightness(0.5)"
+     });
+}
+darken();
+</script>
+</body>
+</html>

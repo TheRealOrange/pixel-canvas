@@ -1,0 +1,29 @@
+#pc {
+    margin:0;
+    padding: 0;
+    box-sizing: border-box;
+    position: fixed;
+    top:-10px;
+    left:-10px;
+    z-index: -1;
+    -webkit-animation: lighten 5s infinite;
+    animation: lighten 5s infinite;
+}
+
+@keyframes lighten {
+    from {
+        filter: "blur(10px) brightness(0.5)";
+    }
+    to {
+        filter: none;
+    }
+}
+
+@-webkit-keyframes lighten {
+    from {
+        filter: "blur(10px) brightness(0.5)";
+    }
+    to {
+        filter: none;
+    }
+}
