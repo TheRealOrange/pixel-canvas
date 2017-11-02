@@ -3,7 +3,8 @@
 <%include partials/header.ejs%>
 </head>
 <body>
-<h1>Node Testing</h1>
+<h1 id="title">Pixel Canvas</h1>
+<button id="start">Press me</button>
 <canvas id="pc"></canvas>
 <script>
 const ctx = document.getElementById("pc").getContext("2d");
@@ -17,12 +18,23 @@ ctx.fillStyle="#def";
 ctx.rect(0,0,w,h);
 ctx.fill();
 
-function darken(){
-     $("#pc").css({
-         filter: "blur(10px) brightness(0.5)"
-     });
+function triangle(colour) {
+    ctx.beginPath();
+    ctx.moveTo(w/2,h/2);
+    ctx.lineTo(w/2-20,h/2-Math.sqrt(1200));
+    ctx.lineTo(w/2+20,h/2-Math.sqrt(1200));
+    ctx.lineTo(w/2,h/2);
+    ctx.fillStyle=colour;
+    ctx.fill();
+    ctx.closePath();
 }
-darken();
+
+triangle("#135")
+
+$("#start").click(function(){
+    $("#pc").addClass("start")
+    $("#start, #title").fadeOut(200);
+})
 </script>
 </body>
 </html>
