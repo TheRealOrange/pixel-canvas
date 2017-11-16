@@ -3,38 +3,51 @@
 <%include partials/header.ejs%>
 </head>
 <body>
+<div class="banner" id="signin"><%=auth ? "Signed in as " + auth.name : "Not signed in"%></div>
 <h1 id="title">Pixel Canvas</h1>
 <button id="start">Press me</button>
 <canvas id="pc"></canvas>
 <script>
-const ctx = document.getElementById("pc").getContext("2d");
-var w = 20+(window.width||window.innerWidth);
-var h = 20+(window.height||window.innerHeight);
-$("#pc").attr({
-    height: h,
-    width: w
+$(function(){
+    const ctx = document.getElementById("pc").getContext("2d");
+    var w,h;
+    function triangle(colour) {
+        ctx.beginPath();
+        ctx.moveTo(w/2,h/2);
+        ctx.lineTo(w/2-20,h/2-Math.sqrt(1200));
+        ctx.lineTo(w/2+20,h/2-Math.sqrt(1200));
+        ctx.lineTo(w/2,h/2);
+        ctx.fillStyle=colour;
+        ctx.fill();
+        ctx.closePath();
+    }
+
+    $(window).resize(function(){
+        w = 20+(window.width||window.innerWidth);
+        h = 20+(window.height||window.innerHeight);
+        $("#pc").attr({
+            height: h,
+            width: w
+        });
+        
+        ctx.fillStyle="#def";
+        ctx.rect(0,0,w,h);
+        ctx.fill();
+
+        triangle("#135");
+    });
+
+    $(window).resize();
+
+    $("#start").click(function(){
+        $("#pc").addClass("start")
+        $("#start, #title").fadeOut(200);
+    });
+
+    setTimeout(function(){
+        $("#signin").slideUp(200);
+    }, 3000)
 });
-ctx.fillStyle="#def";
-ctx.rect(0,0,w,h);
-ctx.fill();
-
-function triangle(colour) {
-    ctx.beginPath();
-    ctx.moveTo(w/2,h/2);
-    ctx.lineTo(w/2-20,h/2-Math.sqrt(1200));
-    ctx.lineTo(w/2+20,h/2-Math.sqrt(1200));
-    ctx.lineTo(w/2,h/2);
-    ctx.fillStyle=colour;
-    ctx.fill();
-    ctx.closePath();
-}
-
-triangle("#135")
-
-$("#start").click(function(){
-    $("#pc").addClass("start")
-    $("#start, #title").fadeOut(200);
-})
 </script>
 </body>
 </html>
