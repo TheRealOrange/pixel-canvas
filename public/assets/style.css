@@ -77,6 +77,11 @@ button#start:hover {
     vertical-align: bottom;
 }
 
+.banner p {
+    bottom: 0;
+    margin: 0;
+}
+
 @keyframes lighten {
     from {
         filter: blur(10px) brightness(0.5);

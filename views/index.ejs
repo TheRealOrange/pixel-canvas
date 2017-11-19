@@ -3,23 +3,57 @@
 <%include partials/header.ejs%>
 </head>
 <body>
-<div class="banner" id="signin"><%=auth ? "Signed in as " + auth.name : "Not signed in"%></div>
+<div class="banner" id="signin"><p><%=auth ? "Signed in as " + auth.name : "Not signed in"%></p></div>
 <h1 id="title">Pixel Canvas</h1>
 <button id="start">Press me</button>
 <canvas id="pc"></canvas>
 <script>
 $(function(){
+    $("#signin").hide().slideDown();
     const ctx = document.getElementById("pc").getContext("2d");
     var w,h;
-    function triangle(colour) {
+    var mx=0,my=0;
+    var tw=20;
+    var th=Math.sqrt(3)*tw;
+    function triangle(x, y, colour=false) {
+        //triangle size is 40xsqrt(1200)
+        up = (x+y)%2;
         ctx.beginPath();
-        ctx.moveTo(w/2,h/2);
-        ctx.lineTo(w/2-20,h/2-Math.sqrt(1200));
-        ctx.lineTo(w/2+20,h/2-Math.sqrt(1200));
-        ctx.lineTo(w/2,h/2);
-        ctx.fillStyle=colour;
-        ctx.fill();
+        if (up) {
+            ctx.moveTo(w/2+tw*x,h/2-th*(y+1));
+            ctx.lineTo(w/2-tw+tw*x,h/2-th*y);
+            ctx.lineTo(w/2+tw+tw*x,h/2-th*y);
+            ctx.lineTo(w/2+tw*x,h/2-th*(y+1));
+        } else {
+            ctx.moveTo(w/2+tw*x,h/2-th*y);
+            ctx.lineTo(w/2-tw+tw*x,h/2-th*(y+1));
+            ctx.lineTo(w/2+tw+tw*x,h/2-th*(y+1));
+            ctx.lineTo(w/2+tw*x,h/2-th*y);
+        }
+        if (colour) {
+            ctx.fillStyle=colour;
+            ctx.fill();
+        } else {
+            ctx.stroke();
+        }
         ctx.closePath();
+    }
+
+    function grid(w,h) {
+        for (i=Math.floor(-w/tw);i<=Math.floor(w/tw);i++){
+            for (j=-Math.floor(h/th);j<=Math.floor(h/th);j++){
+                triangle(i,j);
+            }
+        }
+    }
+
+    function draw(){
+        grid(w,h);
+        triangle(0,0,"#a44");
+        triangle(1,0,"#135");
+        triangle(0,1,"#135");
+        triangle(-1,0,"#135");
+        triangle(40,0,"black");
     }
 
     $(window).resize(function(){
@@ -29,12 +63,12 @@ $(function(){
             height: h,
             width: w
         });
-        
+        ctx.strokeStyle="#bbb";
+        ctx.lineWidth=tw/80;
         ctx.fillStyle="#def";
         ctx.rect(0,0,w,h);
         ctx.fill();
-
-        triangle("#135");
+        draw();
     });
 
     $(window).resize();
