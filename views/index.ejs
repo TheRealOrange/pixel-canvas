@@ -13,7 +13,9 @@ $(function(){
     const ctx = document.getElementById("pc").getContext("2d");
     var w,h;
     var mx=0,my=0;
-    var tw=20;
+    const widths = [5,7,10,15,18,20,25,30,40,60,120,500];
+    var wid = 5;
+    var tw=widths[wid];
     var th=Math.sqrt(3)*tw;
     function triangle(x, y, colour=false) {
         //triangle size is 40xsqrt(1200)
@@ -63,6 +65,8 @@ $(function(){
             height: h,
             width: w
         });
+        tw=widths[wid];
+        th=Math.sqrt(3)*tw;
         ctx.strokeStyle="#bbb";
         ctx.lineWidth=tw/80;
         ctx.fillStyle="#def";
@@ -73,6 +77,23 @@ $(function(){
 
     $(window).resize();
 
+    $(window).bind('keydown',function(){
+        if (event.ctrlKey || event.metaKey) {
+            if (event.which===187){
+                console.log("larger");
+                event.preventDefault();
+                if (wid+1>=widths.length) return;
+                wid+=1;
+                $(window).resize();
+            } else if (event.which===189){
+                console.log("smaller");
+                event.preventDefault();
+                if (wid<=0) return;
+                wid-=1;
+                $(window).resize();
+            }
+        }
+    })
     $("#start").click(function(){
         $("#pc").addClass("start")
         $("#start, #title").fadeOut(200);
