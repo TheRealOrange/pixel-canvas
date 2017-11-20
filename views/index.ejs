@@ -3,20 +3,32 @@
 <%include partials/header.ejs%>
 </head>
 <body>
-<div class="banner" id="signin"><p><%=auth ? "Signed in as " + auth.name : "Not signed in"%></p></div>
+<div class="banner" id="signin"><p><%-auth ? "Signed in as " + auth.name : "You are not signed in. Sign in <a href='#'>here?</a>"%></p></div>
 <h1 id="title">Pixel Canvas</h1>
-<button id="start">Press me</button>
+<button id="start">Start</button>
 <canvas id="pc"></canvas>
 <script>
 $(function(){
     $("#signin").hide().slideDown();
     const ctx = document.getElementById("pc").getContext("2d");
     var w,h;
-    var mx=0,my=0;
+    var mx=0,my=0,x=0,y=0;
     const widths = [5,7,10,15,18,20,25,30,40,60,120,500];
     var wid = 5;
     var tw=widths[wid];
     var th=Math.sqrt(3)*tw;
+    var triangles = [
+        [0,0,"#a44"],
+        [-1,-1,"#a44"],
+        [1,-1,"#a44"],
+        [0,1,"#135"],
+        [1,0,"#135"],
+        [-1,0,"#135"],
+        [-2,-1,"#135"],
+        [0,-1,"#135"],
+        [2,-1,"#135"],
+        [40,0,"black"]
+    ];
     function triangle(x, y, colour=false) {
         //triangle size is 40xsqrt(1200)
         up = (x+y)%2;
@@ -51,11 +63,10 @@ $(function(){
 
     function draw(){
         grid(w,h);
-        triangle(0,0,"#a44");
-        triangle(1,0,"#135");
-        triangle(0,1,"#135");
-        triangle(-1,0,"#135");
-        triangle(40,0,"black");
+        for (i=0;i<triangles.length;i++){
+            triangle(triangles[i][0],triangles[i][1],triangles[i][2]);
+        }
+        console.log("The red triangle is (0,0).");
     }
 
     $(window).resize(function(){
@@ -68,7 +79,7 @@ $(function(){
         tw=widths[wid];
         th=Math.sqrt(3)*tw;
         ctx.strokeStyle="#bbb";
-        ctx.lineWidth=tw/80;
+        ctx.lineWidth=tw/160;
         ctx.fillStyle="#def";
         ctx.rect(0,0,w,h);
         ctx.fill();
@@ -95,13 +106,35 @@ $(function(){
         }
     })
     $("#start").click(function(){
-        $("#pc").addClass("start")
+        $("#pc").addClass("start");
         $("#start, #title").fadeOut(200);
     });
 
     setTimeout(function(){
         $("#signin").slideUp(200);
-    }, 3000)
+    }, 7000);
+
+    $("#pc").click(function(e){
+        let ox=e.clientX+10-w/2, oy=-(e.clientY+10-h/2);
+        let clickX=Math.floor(ox/tw), clickY=Math.floor(oy/th);
+        console.log("y:"+clickY);
+        console.log(clickX);
+        let modx = ((ox%tw)+tw)%tw, mody = ((oy%th)+th)%th;
+        console.log(modx,mody);
+        if ((clickX+clickY)%2){
+            console.log("slope down");
+            clickX+=(mody>(tw-modx)*Math.sqrt(3));
+        } else {
+            console.log("slope up");
+            clickX+=(mody<modx*Math.sqrt(3));
+        }
+        triangles.push([clickX,clickY, "hsl("+Math.floor(Math.random()*360)+",70%,70%)"]);
+        $(window).resize();
+    });
+
+    $(document).on('gesturestart', function (e) {
+        e.preventDefault();
+    });
 });
 </script>
 </body>
