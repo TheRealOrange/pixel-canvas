@@ -55,9 +55,14 @@ $(function(){
         ctx.closePath();
     }
 
+    function inRange(x,y) {
+        return (Math.floor((-w+offsetX)/tw)<=x&&x<=Math.floor((w+offsetX)/tw)) 
+        && (-Math.floor((h-offsetY)/th)<=y&&y<=Math.floor((h+offsetY)/th));
+    }
+
     function grid(w,h) {
         for (i=Math.floor((-w+offsetX)/tw);i<=Math.floor((w+offsetX)/tw);i++){
-            for (j=-Math.floor((h-offsetY)/th);j<=Math.floor((h-offsetY)/th);j++){
+            for (j=-Math.floor((h-offsetY)/th);j<=Math.floor((h+offsetY)/th);j++){
                 triangle(i,j);
             }
         }
@@ -66,7 +71,9 @@ $(function(){
     function draw(){
         grid(w,h);
         for (i=0;i<triangles.length;i++){
-            triangle(triangles[i][0],triangles[i][1],triangles[i][2]);
+            if (inRange(triangles[i][0],triangles[i][1])) {
+                triangle(triangles[i][0],triangles[i][1],triangles[i][2]);
+            }
         }
     }
 
@@ -145,13 +152,12 @@ $(function(){
             let cy=e.clientY-drag.y;
             console.log(cx,cy);
             drag.x=e.clientX;drag.y=e.clientY;
-            if (drag.ging||(cx^2+cy^2)>0.1){
+            if (drag.ging||Math.pow(cx,2)+Math.pow(cy,2)>2){
                 drag.ging=true;
                 offsetX-=cx;
                 offsetY+=cy;
+                console.log(offsetX,offsetY);
                 $(window).resize();
-            } else {
-                console.log("yay.");
             }
         }
     });
